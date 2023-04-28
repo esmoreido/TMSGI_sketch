@@ -28,4 +28,4 @@ void loop()
   Serial.print(thermometer.getTemperatureF());
   Serial.println(" F");
   delay(1000);
-}
+} 
