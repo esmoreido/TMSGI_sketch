@@ -1,22 +1,15 @@
 #include <ESP8266WiFi.h>                                     // Подключаем библиотеку ESP8266WiFi
-#include <TroykaThermometer.h> // Подключаем библиотеку для аналогового термометра
-#include <NTPClient.h>
-#include <WiFiUdp.h>
+#include <TroykaThermometer.h>
+
 char ssid[]     = "";               // Укажите здесь в кавычках название вашей точки доступа
 char password[] = "";            // Укажите здесь в кавычках пароль вашей точки доступа
 
 const char* host     = "dweet.io";                              // Адрес сервера на который будем отправлять данные
 
-TroykaThermometer thermometer(A7);                                      // Создаем объект датчика и указываем соответствующий порт
+TroykaThermometer thermometer(A7);                                      // Создаем объект датчика
 // адрес двита
-String thing = "";          // В кавычках указываем любое название для стрима, например MyStreamTempSensor2023, тогда url для просмотра будет выглядеть как https://dweet.io/follow/MyStreamTempSensor2023
-String content = ""; // Название для переменной, которое будет отображаться в стриме
-
-
-// Define NTP Client to get time
-WiFiUDP ntpUDP;
-NTPClient timeClient(ntpUDP, "pool.ntp.org");
-
+String thing = "";
+String content = "";
 void setup() {
   Serial.begin(9600);                                         // Инициализируем последовательный порт
   delay(10);
@@ -28,7 +21,7 @@ void setup() {
   Serial.println(ssid);
   WiFi.mode(WIFI_STA);
   WiFi.begin(ssid, password);
-  // ждем соединения с сетью
+
   while (WiFi.status() != WL_CONNECTED) {
     delay(500);
     Serial.print(".");
@@ -38,9 +31,6 @@ void setup() {
   Serial.println("WiFi connected");
   Serial.println("IP address: ");
   Serial.println(WiFi.localIP());
-
-   timeClient.begin();
-   timeClient.setTimeOffset(10800);
 }
 
 void loop() {
@@ -49,21 +39,12 @@ void loop() {
   float temp = thermometer.getTemperatureC();                              // Считываем данные температуры
   Serial.print("Temperature = ");
   Serial.println(temp);
-
-  timeClient.update();
-  String formattedTime = timeClient.getFormattedTime();
-  Serial.print("Formatted Time: ");
-  Serial.println(formattedTime); 
-  
-  delay(1000);
-  // создаем объект для передачи запроса
   WiFiClient client;
   if (!client.connect("dweet.io", 80)) {
     Serial.println("connection failed");
     delay(5000);
     return;
   }
-  
   Serial.println("sending data to server");
   if (client.connected()) {
     // формируем GET-запрос для отправки
@@ -72,13 +53,11 @@ void loop() {
   url += "?";
   url += content;
   url += "=";
-  url += temp; 
-  url += "&time=";
-  url += formattedTime;
+  url += temp;
 
   Serial.print("Requesting URL: ");
   Serial.println(url);
-  // отправляем запрос 
+  
      client.print(String("GET ") + url + " HTTP/1.1\r\n" +
                "Host: " + host + "\r\n" + 
                "Connection: close\r\n\r\n");
