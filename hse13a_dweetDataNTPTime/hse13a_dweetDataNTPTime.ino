@@ -1,16 +1,16 @@
-#include <ESP8266WiFi.h>                                     // Подключаем библиотеку ESP8266WiFi
+ce#include <ESP8266WiFi.h>                                     // Подключаем библиотеку ESP8266WiFi
 #include <TroykaThermometer.h> // Подключаем библиотеку для аналогового термометра
 #include <NTPClient.h>
 #include <WiFiUdp.h>
-char ssid[]     = "WSHYDRO";               // Укажите здесь в кавычках название вашей точки доступа
-char password[] = "d7f4r5aes";            // Укажите здесь в кавычках пароль вашей точки доступа
+char ssid[]     = "";               // Укажите здесь в кавычках название вашей точки доступа
+char password[] = "";            // Укажите здесь в кавычках пароль вашей точки доступа
 
 const char* host     = "dweet.io";                              // Адрес сервера на который будем отправлять данные
 
 TroykaThermometer thermometer(A7);                                      // Создаем объект датчика и указываем соответствующий порт
 // адрес двита
-String thing = "termoEsmo";          // В кавычках указываем любое название для стрима, например MyStreamTempSensor2023, тогда url для просмотра будет выглядеть как https://dweet.io/follow/MyStreamTempSensor2023
-String content = "temperature"; // Название для переменной, которое будет отображаться в стриме
+String thing = "";          // В кавычках указываем любое название для стрима, например MyStreamTempSensor2023, тогда url для просмотра будет выглядеть как https://dweet.io/follow/MyStreamTempSensor2023
+String content = ""; // Название для переменной, которое будет отображаться в стриме
 
 
 // Define NTP Client to get time
